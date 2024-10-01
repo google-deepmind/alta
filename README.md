@@ -43,7 +43,7 @@ compiling them to Transformer weights.
 Here is an example of running the unit tests for the parity program:
 
 ```
-python -m example.parity_test
+python -m examples.parity_test
 ```
 
 ## License and disclaimer
