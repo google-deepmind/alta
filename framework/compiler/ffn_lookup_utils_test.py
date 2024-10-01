@@ -16,9 +16,9 @@
 from absl.testing import absltest
 import numpy as np
 
-from alta.framework import program_builder as pb
-from alta.framework.compiler import dim_utils
-from alta.framework.compiler import ffn_lookup_utils
+from framework import program_builder as pb
+from framework.compiler import dim_utils
+from framework.compiler import ffn_lookup_utils
 
 
 class FfnExpansionUtilsTest(absltest.TestCase):

@@ -18,7 +18,7 @@
 import dataclasses
 import functools
 
-from alta.framework import program
+from framework import program
 
 
 @dataclasses.dataclass(frozen=True)

@@ -21,13 +21,13 @@ from absl import app
 from absl import flags
 import tensorflow as tf
 
-from alta.framework import program_registry
-from alta.framework.common import io_utils
-from alta.framework.common import tf_utils
-from alta.framework.compiler import compiler_config
-from alta.framework.compiler import compiler_utils
-from alta.framework.traces.ffn import serialize
-from alta.framework.transformer import transformer_utils
+from framework import program_registry
+from framework.common import io_utils
+from framework.common import tf_utils
+from framework.compiler import compiler_config
+from framework.compiler import compiler_utils
+from framework.traces.ffn import serialize
+from framework.transformer import transformer_utils
 
 _INPUT_PATH = flags.DEFINE_string(
     "input_path", None, "Path to jsonl file of model inputs.", required=True

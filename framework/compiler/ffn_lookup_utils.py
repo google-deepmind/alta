@@ -25,9 +25,9 @@ import dataclasses
 
 import numpy as np
 
-from alta.framework import program
-from alta.framework.compiler import dim_utils
-from alta.framework.mlp import mlp_rules
+from framework import program
+from framework.compiler import dim_utils
+from framework.mlp import mlp_rules
 
 
 @dataclasses.dataclass(frozen=True)

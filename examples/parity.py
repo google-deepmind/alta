@@ -25,7 +25,7 @@ track of the running parity. Outputs a sequence of all 0's if there are an even
 number of 1's and a sequence of all 1's if there are an odd number.
 """
 
-from alta.framework import program_builder as pb
+from framework import program_builder as pb
 
 # Some programs use EOS or START token.
 EOS_VALUE = 2

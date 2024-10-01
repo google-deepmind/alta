@@ -18,9 +18,9 @@
 import copy
 import itertools
 from typing import Optional
-from alta.framework import program
-from alta.framework.interpreter import logger_utils
-from alta.framework.mlp import mlp_logger
+from framework import program
+from framework.interpreter import logger_utils
+from framework.mlp import mlp_logger
 
 
 def _get_activations(

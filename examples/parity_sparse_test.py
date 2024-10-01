@@ -21,14 +21,14 @@ import random
 from absl.testing import absltest
 from absl.testing import parameterized
 
-from alta.examples import parity_sparse
-from alta.framework.compiler import compiler_config
-from alta.framework.compiler import compiler_utils
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import logger_utils
-from alta.framework.interpreter import program_utils
-from alta.framework.mlp import mlp_logger
-from alta.framework.transformer import transformer_utils
+from examples import parity_sparse
+from framework.compiler import compiler_config
+from framework.compiler import compiler_utils
+from framework.interpreter import interpreter_utils
+from framework.interpreter import logger_utils
+from framework.interpreter import program_utils
+from framework.mlp import mlp_logger
+from framework.transformer import transformer_utils
 
 
 class ParityAlgorithm(enum.Enum):

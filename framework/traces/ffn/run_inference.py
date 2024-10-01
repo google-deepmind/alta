@@ -21,14 +21,14 @@ from absl import app
 from absl import flags
 import numpy as np
 
-from alta.framework import program_registry
-from alta.framework.compiler import debug_utils
-from alta.framework.compiler import dim_utils
-from alta.framework.traces.ffn import activation
-from alta.framework.traces.ffn import data
-from alta.framework.traces.ffn import inference
-from alta.framework.traces.ffn import metrics
-from alta.framework.traces.ffn import serialize
+from framework import program_registry
+from framework.compiler import debug_utils
+from framework.compiler import dim_utils
+from framework.traces.ffn import activation
+from framework.traces.ffn import data
+from framework.traces.ffn import inference
+from framework.traces.ffn import metrics
+from framework.traces.ffn import serialize
 
 
 _EXAMPLES_PATH = flags.DEFINE_string(

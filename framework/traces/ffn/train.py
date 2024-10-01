@@ -23,7 +23,7 @@ import jax
 import jax.numpy as jnp
 import optax
 
-from alta.framework.traces.ffn import inference
+from framework.traces.ffn import inference
 
 
 @dataclasses.dataclass(frozen=True)

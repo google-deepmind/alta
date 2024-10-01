@@ -17,10 +17,10 @@
 
 from absl.testing import absltest
 
-from alta.examples import sort_unique
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import logger_utils
-from alta.framework.interpreter import program_utils
+from examples import sort_unique
+from framework.interpreter import interpreter_utils
+from framework.interpreter import logger_utils
+from framework.interpreter import program_utils
 
 
 class SortUniqueTest(absltest.TestCase):

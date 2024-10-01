@@ -28,13 +28,13 @@ import numpy as np
 import optax
 import tensorflow as tf
 
-from alta.framework.traces.ffn import activation
-from alta.framework.traces.ffn import data
-from alta.framework.traces.ffn import inference
-from alta.framework.traces.ffn import initialization
-from alta.framework.traces.ffn import metrics
-from alta.framework.traces.ffn import serialize
-from alta.framework.traces.ffn import train
+from framework.traces.ffn import activation
+from framework.traces.ffn import data
+from framework.traces.ffn import inference
+from framework.traces.ffn import initialization
+from framework.traces.ffn import metrics
+from framework.traces.ffn import serialize
+from framework.traces.ffn import train
 
 
 _TRAIN_EXAMPLES_PATH = flags.DEFINE_string(

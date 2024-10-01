@@ -22,9 +22,9 @@ programs with the interpreter.
 
 from typing import Callable, Optional
 
-from alta.framework import program
-from alta.framework.mlp import mlp_logger
-from alta.framework.mlp import mlp_rules
+from framework import program
+from framework.mlp import mlp_logger
+from framework.mlp import mlp_rules
 
 
 class VarsWrapper:

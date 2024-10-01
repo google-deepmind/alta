@@ -21,9 +21,9 @@ import jax.numpy as jnp
 import numpy as np
 import scipy
 
-from alta.framework.traces.ffn import activation
-from alta.framework.traces.ffn import inference
-from alta.framework.transformer import parameters
+from framework.traces.ffn import activation
+from framework.traces.ffn import inference
+from framework.transformer import parameters
 
 
 def initialize_embeddings(params, input_ids):

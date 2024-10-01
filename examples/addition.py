@@ -24,7 +24,7 @@ the carry value. When the last digit has been processed, the final carry value
 is added to the output buffer.
 """
 
-from alta.framework import program_builder as pb
+from framework import program_builder as pb
 
 # Define processing steps.
 STEP_INIT = 0

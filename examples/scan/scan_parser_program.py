@@ -19,9 +19,9 @@ This implements only the parsing stage of the overall SCAN program to offer
 a simpler illustration of how the overall algorithm works.
 """
 
-from alta.examples.scan import grammar_utils
-from alta.examples.scan import scan_utils
-from alta.framework import program_builder as pb
+from examples.scan import grammar_utils
+from examples.scan import scan_utils
+from framework import program_builder as pb
 
 
 EOS_ID = scan_utils.get_input_id("eos")

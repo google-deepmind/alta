@@ -23,13 +23,13 @@ import numpy as np
 import numpy.typing as npt
 import tensorflow as tf
 
-from alta.framework import program
-from alta.framework.common import io_utils
-from alta.framework.common import tf_utils
-from alta.framework.compiler import dim_utils
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import logger_utils
-from alta.framework.interpreter import program_utils
+from framework import program
+from framework.common import io_utils
+from framework.common import tf_utils
+from framework.compiler import dim_utils
+from framework.interpreter import interpreter_utils
+from framework.interpreter import logger_utils
+from framework.interpreter import program_utils
 
 
 @dataclasses.dataclass

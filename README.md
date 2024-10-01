@@ -1,37 +1,54 @@
-# alta
+# ALTA
 
-TODO(b/369422468): Add a description for your new project, explain what is
-being released here, etc... Additional, the following sections are normally
-expected for all releases. Feel free to add additional sections if appropriate
-for your project.
+This repository contains open source code related to the paper
+"ALTA: Compiler-Based Analysis of Transformers".
 
 ## Installation
 
-Write instructions for how the user should install your code. The instructions
-should ideally be valid when copy-pasted. You can combine this with the Usage
-section if there's no separate installation step.
+Clone the repository:
 
-## Usage
+```shell
+git clone https://github.com/google-deepmind/git
+```
 
-Write example usage of your code. The instructions should ideally be valid when
-copy-pasted, and will be used by your technical reviewer to verify that your
-package functions correctly.
+It is then recommended to setup a virtual environment. We provide an example
+using `conda`:
 
-## Citing this work
+```shell
+conda create -n alta python=3.10
+conda activate alta
+```
 
-Add citation details here, usually a pastable BibTeX snippet:
+Then install dependencies specified in `setup.py`:
 
-```latex
-@article{publicationname,
-      title={Publication Name},
-      author={Author One and Author Two and Author Three},
-      year={{request_year}},
-}
+```shell
+pip install .
+```
+
+## Overview
+
+The code includes the ALTA language specification
+(`framework/`), symbolic interpreter
+(`framework/interpreter`), and compiler (`framework/compiler`) to map ALTA programs to Transformer weights. The code also includes
+a self-contained Transformer implementation (`framework/transformer`) that can be used with the compiled
+weights. Finally, we include tools for extracting execution traces and using
+these traces as supervision to train a MLP (`framework/traces`).
+
+## Usage Examples
+
+Various example programs are in the `examples/` directory. The unit tests
+show examples of running these programs using the symbolic interpreter and by
+compiling them to Transformer weights.
+
+Here is an example of running the unit tests for the parity program:
+
+```
+python -m example.parity_test
 ```
 
 ## License and disclaimer
 
-Copyright {request_year} DeepMind Technologies Limited
+Copyright 2024 DeepMind Technologies Limited
 
 All software is licensed under the Apache License, Version 2.0 (Apache 2.0);
 you may not use this file except in compliance with the Apache 2.0 license.

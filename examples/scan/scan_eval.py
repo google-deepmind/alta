@@ -18,11 +18,11 @@
 from absl import app
 from absl import flags
 
-from alta.examples.scan import data_utils
-from alta.examples.scan import scan_sparse_program
-from alta.examples.scan import scan_utils
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import program_utils
+from examples.scan import data_utils
+from examples.scan import scan_sparse_program
+from examples.scan import scan_utils
+from framework.interpreter import interpreter_utils
+from framework.interpreter import program_utils
 
 
 _INPUT = flags.DEFINE_string(

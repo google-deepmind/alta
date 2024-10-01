@@ -15,7 +15,7 @@
 
 """Utility functions for configuring and initializing programs."""
 
-from alta.framework import program
+from framework import program
 
 
 def _get_default_var_map(

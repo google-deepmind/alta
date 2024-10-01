@@ -19,9 +19,9 @@ from typing import Any
 
 import numpy as np
 
-from alta.framework import program
-from alta.framework.compiler import dim_utils
-from alta.framework.transformer import parameters
+from framework import program
+from framework.compiler import dim_utils
+from framework.transformer import parameters
 
 
 def variables_to_vector(

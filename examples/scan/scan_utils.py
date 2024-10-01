@@ -17,7 +17,7 @@
 
 import functools
 
-from alta.examples.scan import grammar_utils
+from examples.scan import grammar_utils
 
 
 # Size of stack and memory data structures.

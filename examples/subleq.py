@@ -28,7 +28,7 @@ Instruction subleq a, b, c
     goto a + 3
 """
 
-from alta.framework import program_builder as pb
+from framework import program_builder as pb
 
 
 # Number of memory registers.

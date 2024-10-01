@@ -19,11 +19,11 @@ import dataclasses
 import itertools
 from typing import Any, Iterator, Optional
 
-from alta.framework import program
-from alta.framework import var_utils
-from alta.framework.mlp import mlp_rules
-from alta.framework.mlp import simple_mlp
-from alta.framework.mlp import sparse_mlp
+from framework import program
+from framework import var_utils
+from framework.mlp import mlp_rules
+from framework.mlp import simple_mlp
+from framework.mlp import sparse_mlp
 
 
 # Special variable used with relative position attention heads.

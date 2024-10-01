@@ -17,12 +17,12 @@
 
 from absl.testing import absltest
 
-from alta.examples.scan import grammar_utils
-from alta.examples.scan import scan_parser_program
-from alta.examples.scan import scan_utils
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import logger_utils
-from alta.framework.interpreter import program_utils
+from examples.scan import grammar_utils
+from examples.scan import scan_parser_program
+from examples.scan import scan_utils
+from framework.interpreter import interpreter_utils
+from framework.interpreter import logger_utils
+from framework.interpreter import program_utils
 
 
 def get_input_ids(input_string):

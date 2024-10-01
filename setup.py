@@ -13,21 +13,15 @@
 # limitations under the License.
 # ==============================================================================
 
-"""Class for logging satisfied transition rules."""
+"""Setup for ALTA."""
 
-from framework.mlp import mlp_rules
+import setuptools
 
-
-class MLPLogger:
-  """Logs seen rules."""
-
-  seen: set[mlp_rules.Rule]
-
-  def __init__(self):
-    self.seen = set()
-
-  def add(self, rule: mlp_rules.Rule):
-    self.seen.add(rule)
-
-  def reset(self):
-    self.seen = set()
+REQUIRED_PACKAGES = ["absl-py", "tensorflow", "numpy", "jax"]
+setuptools.setup(
+    name="alta",
+    description="Code related to ALTA.",
+    packages=setuptools.find_packages(),
+    install_requires=REQUIRED_PACKAGES,
+    license="Apache 2.0",
+)

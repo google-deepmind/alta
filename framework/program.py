@@ -18,8 +18,8 @@
 import dataclasses
 from typing import Callable, Dict, Optional, Union
 
-from alta.framework.mlp import mlp_logger
-from alta.framework.mlp import mlp_rules
+from framework.mlp import mlp_logger
+from framework.mlp import mlp_rules
 
 
 # Categorical variables are represented as one-hot vectors.

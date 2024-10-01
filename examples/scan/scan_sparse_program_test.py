@@ -19,14 +19,14 @@ import unittest
 
 from absl.testing import absltest
 
-from alta.examples.scan import scan_sparse_program
-from alta.examples.scan import scan_utils
-from alta.framework.compiler import compiler_config
-from alta.framework.compiler import compiler_utils
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import logger_utils
-from alta.framework.interpreter import program_utils
-from alta.framework.transformer import transformer_utils
+from examples.scan import scan_sparse_program
+from examples.scan import scan_utils
+from framework.compiler import compiler_config
+from framework.compiler import compiler_utils
+from framework.interpreter import interpreter_utils
+from framework.interpreter import logger_utils
+from framework.interpreter import program_utils
+from framework.transformer import transformer_utils
 
 
 class ScanGraphTest(absltest.TestCase):

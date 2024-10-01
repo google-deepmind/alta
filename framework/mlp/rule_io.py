@@ -19,8 +19,8 @@ import dataclasses
 import json
 from typing import Any
 import tensorflow as tf
-from alta.framework.common import io_utils
-from alta.framework.mlp import mlp_rules
+from framework.common import io_utils
+from framework.mlp import mlp_rules
 
 
 def rule_to_json(rule: mlp_rules.Rule) -> str:

@@ -15,9 +15,9 @@
 
 """Implements a program for parsing and decoding SCAN inputs."""
 
-from alta.examples.scan import grammar_utils
-from alta.examples.scan import scan_utils
-from alta.framework import program_builder as pb
+from examples.scan import grammar_utils
+from examples.scan import scan_utils
+from framework import program_builder as pb
 
 
 # Processing steps.

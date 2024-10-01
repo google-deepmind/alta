@@ -15,14 +15,14 @@
 
 """Implements a conversion from program spec to parameter values."""
 
-from alta.framework import program
-from alta.framework.compiler import compiler_config
-from alta.framework.compiler import dim_utils
-from alta.framework.compiler import embedding_utils
-from alta.framework.compiler import ffn_expansion_utils
-from alta.framework.compiler import ffn_lookup_utils
-from alta.framework.compiler import projection_utils
-from alta.framework.transformer import parameters
+from framework import program
+from framework.compiler import compiler_config
+from framework.compiler import dim_utils
+from framework.compiler import embedding_utils
+from framework.compiler import ffn_expansion_utils
+from framework.compiler import ffn_lookup_utils
+from framework.compiler import projection_utils
+from framework.transformer import parameters
 
 
 def _get_feed_forward_params(

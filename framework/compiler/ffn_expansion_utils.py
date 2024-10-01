@@ -24,10 +24,10 @@ import dataclasses
 
 import numpy as np
 
-from alta.framework import program
-from alta.framework import var_utils
-from alta.framework.compiler import compiler_config
-from alta.framework.compiler import dim_utils
+from framework import program
+from framework import var_utils
+from framework.compiler import compiler_config
+from framework.compiler import dim_utils
 
 
 @dataclasses.dataclass(frozen=True)

@@ -22,9 +22,9 @@ https://github.com/brendenlake/SCAN
 from absl import app
 from absl import flags
 
-from alta.examples.scan import data_utils
-from alta.examples.scan import scan_utils
-from alta.framework.common import io_utils
+from examples.scan import data_utils
+from examples.scan import scan_utils
+from framework.common import io_utils
 
 
 _INPUT = flags.DEFINE_string(

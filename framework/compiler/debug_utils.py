@@ -19,7 +19,7 @@ from typing import Any, Optional
 
 import numpy as np
 
-from alta.framework.compiler import dim_utils
+from framework.compiler import dim_utils
 
 # Allow some flexibility in the value.
 THRESHOLD = 0.9

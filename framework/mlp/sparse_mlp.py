@@ -17,10 +17,10 @@
 
 from typing import Callable, Optional
 
-from alta.framework import program
-from alta.framework import var_utils
-from alta.framework.mlp import mlp_logger
-from alta.framework.mlp import mlp_rules
+from framework import program
+from framework import var_utils
+from framework.mlp import mlp_logger
+from framework.mlp import mlp_rules
 
 
 def _get_lhs_variables(rule: mlp_rules.Rule) -> tuple[str, ...]:

@@ -18,9 +18,9 @@
 from absl import app
 from absl import flags
 
-from alta.framework import program_registry
-from alta.framework.common import io_utils
-from alta.framework.traces import trace_utils
+from framework import program_registry
+from framework.common import io_utils
+from framework.traces import trace_utils
 
 
 _INPUT = flags.DEFINE_string("input", "", "Jsonl file with model inputs.")

@@ -15,10 +15,10 @@
 
 """Registry of programs."""
 
-from alta.examples import parity
-from alta.examples import parity_sparse
-from alta.examples.scan import scan_sparse_program
-from alta.framework import program
+from examples import parity
+from examples import parity_sparse
+from examples.scan import scan_sparse_program
+from framework import program
 
 
 def get_program(

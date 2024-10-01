@@ -21,11 +21,11 @@ from absl import app
 from absl import flags
 import apache_beam as beam
 
-from alta.framework import program_registry
-from alta.framework.interpreter import interpreter_utils
-from alta.framework.interpreter import program_utils
-from alta.framework.mlp import mlp_logger
-from alta.framework.mlp import rule_io
+from framework import program_registry
+from framework.interpreter import interpreter_utils
+from framework.interpreter import program_utils
+from framework.mlp import mlp_logger
+from framework.mlp import rule_io
 
 
 FLAGS = flags.FLAGS

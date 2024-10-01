@@ -25,8 +25,8 @@ from absl import flags
 import apache_beam as beam
 import tensorflow as tf
 
-from alta.framework import program_registry
-from alta.framework.traces import trace_utils
+from framework import program_registry
+from framework.traces import trace_utils
 
 
 _INPUT = flags.DEFINE_string("input", "", "Model inputs jsonl file.")

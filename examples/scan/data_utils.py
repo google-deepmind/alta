@@ -15,7 +15,7 @@
 
 """Utilities for loading and parsing SCAN data."""
 
-from alta.framework.common import io_utils
+from framework.common import io_utils
 
 
 TARGET_MAP = {

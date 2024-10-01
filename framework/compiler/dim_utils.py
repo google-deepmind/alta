@@ -18,8 +18,8 @@
 import dataclasses
 from typing import Dict, Tuple
 
-from alta.framework import program
-from alta.framework import var_utils
+from framework import program
+from framework import var_utils
 
 
 @dataclasses.dataclass

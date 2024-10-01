@@ -15,7 +15,7 @@
 
 """Implements sparse version of programs for parity task."""
 
-from alta.framework import program_builder as pb
+from framework import program_builder as pb
 
 # Some programs use EOS or START token.
 EOS_VALUE = 2

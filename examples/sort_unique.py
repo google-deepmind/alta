@@ -26,7 +26,7 @@ The RASP program for this is:
 This implementation relies on the presence of a special BOS token.
 """
 
-from alta.framework import program_builder as pb
+from framework import program_builder as pb
 
 BOS_VALUE = 0
 INPUT_RANGE = 16
