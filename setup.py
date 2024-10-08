@@ -17,11 +17,13 @@
 
 import setuptools
 
-REQUIRED_PACKAGES = ["absl-py", "tensorflow", "numpy", "jax"]
+REQUIRED_PACKAGES = ["absl-py", "tensorflow", "numpy", "jax",
+                     "apache-beam", "scipy"]
 setuptools.setup(
     name="alta",
     description="Code related to ALTA.",
     packages=setuptools.find_packages(),
     install_requires=REQUIRED_PACKAGES,
     license="Apache 2.0",
+    py_requires=">=3.10",
 )
