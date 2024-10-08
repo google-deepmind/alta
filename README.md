@@ -8,7 +8,7 @@ This repository contains open source code related to the paper
 Clone the repository:
 
 ```shell
-git clone https://github.com/google-deepmind/git
+git clone https://github.com/google-deepmind/alta.git
 ```
 
 It is then recommended to setup a virtual environment. We provide an example
