@@ -20,7 +20,7 @@ but can be convienent and more computationally efficient for prototyping
 programs with the interpreter.
 """
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from framework import program
 from framework.mlp import mlp_logger
@@ -77,7 +77,7 @@ class SimpleMLP(program.BaseMLP):
   def run_layer(
       self,
       activations: program.Activations,
-      logger: Optional[mlp_logger.MLPLogger] = None,
+      logger: mlp_logger.MLPLogger | None = None,
   ) -> None:
     if logger is not None:
       raise NotImplementedError("Logging not yet implemented for SimpleMLP.")

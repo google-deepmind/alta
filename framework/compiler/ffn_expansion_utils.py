@@ -115,7 +115,9 @@ def _build_set_expansion_params(
   )
 
 
-def _get_weight_and_bias(expansion_scalar_1, threshold):
+def _get_weight_and_bias(
+    expansion_scalar_1: float, threshold: float
+) -> tuple[float, float]:
   """Returns the weight and bias to implement a "step" at `threshold`.
 
   Approximates a step function at `threshold` with the parameterization `y =

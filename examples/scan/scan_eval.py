@@ -17,6 +17,7 @@
 
 from absl import app
 from absl import flags
+from absl import logging
 
 from examples.scan import data_utils
 from examples.scan import scan_sparse_program
@@ -45,9 +46,9 @@ _POSITION_SHIFT = flags.DEFINE_integer(
 def get_output_string(input_string):
   """Returns output string for given input string."""
   program_spec = scan_sparse_program.build_program_spec()
-  print("input_string: %s" % str(input_string))
+  logging.info("input_string: %s", str(input_string))
   input_ids = scan_utils.input_string_to_input_ids(input_string)
-  print("input_ids: %s" % str(input_ids))
+  logging.info("input_ids: %s", str(input_ids))
   activations_seq = program_utils.initialize_activations(
       program_spec,
       input_ids,
@@ -63,20 +64,23 @@ def get_output_string(input_string):
   return " ".join(output_tokens)
 
 
-def main(unused_argv):
+def main(argv):
+  if len(argv) > 1:
+    raise app.UsageError("Too many command-line arguments.")
+
   examples = data_utils.load_examples(_INPUT.value)
-  print("len(examples): %s" % len(examples))
+  logging.info("len(examples): %s", len(examples))
   if _OFFSET.value:
     examples = examples[_OFFSET.value :]
   if _LIMIT.value:
     examples = examples[: _LIMIT.value]
 
   for idx, (input_string, output_string) in enumerate(examples):
-    print("idx: %s" % (idx + _OFFSET.value))
-    print("input_string: %s" % input_string)
-    print("output_string: %s" % output_string)
+    logging.info("idx: %s", (idx + _OFFSET.value))
+    logging.info("input_string: %s", input_string)
+    logging.info("output_string: %s", output_string)
     predicted_string = get_output_string(input_string)
-    print("predicted_string: %s" % predicted_string)
+    logging.info("predicted_string: %s", predicted_string)
     if predicted_string != output_string:
       raise ValueError("Mismatch: %s %s" % (input_string, output_string))
 

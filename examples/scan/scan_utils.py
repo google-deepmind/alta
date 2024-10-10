@@ -49,7 +49,7 @@ MAX_INPUT_LENGTH = 9
 
 # The difference between the longest output sequence in the test and train
 # sets of the length split is 32.
-def get_num_positions(max_num_padding: int):
+def get_num_positions(max_num_padding: int) -> int:
   # Include start and eos symbols.
   return (
       2
@@ -61,6 +61,7 @@ def get_num_positions(max_num_padding: int):
       + max_num_padding
   )
 
+
 # Offsets relative to start symbol.
 STACK_OFFSET = 4
 TREE_OFFSET = STACK_OFFSET + STACK_LENGTH
@@ -69,26 +70,28 @@ INPUT_OFFSET = OUTPUT_OFFSET + OUTPUT_LENGTH
 
 
 @functools.cache
-def get_input_vocab():
+def _get_input_vocab():
   input_tokens = grammar_utils.SOURCE_TERMINALS + SPECIAL_INPUTS
   return grammar_utils.Vocab(input_tokens)
 
 
-def get_input_id(input_token):
+def get_input_id(input_token: str) -> int | None:
   if input_token is None:
     return None
-  input_vocab = get_input_vocab()
+  input_vocab = _get_input_vocab()
   return input_vocab.token_to_idx[input_token]
 
 
-def get_input_token(input_id):
+def get_input_token(input_id: int) -> str | None:
   if input_id is None:
     return None
-  input_vocab = get_input_vocab()
+  input_vocab = _get_input_vocab()
   return input_vocab.idx_to_token[input_id]
 
 
-def input_string_to_input_ids(source_string, padding=0):
+def input_string_to_input_ids(
+    source_string: str, padding: int = 0
+) -> list[int]:
   """Encode input string as sequence of input IDs."""
   source_tokens = source_string.split()
   input_tokens = (
@@ -101,14 +104,23 @@ def input_string_to_input_ids(source_string, padding=0):
       + source_tokens
       + ["eos"]
   )
-  input_ids = [get_input_id(token) for token in input_tokens]
+  input_ids = []
+  for token in input_tokens:
+    input_id = get_input_id(token)
+    if input_id is not None:
+      input_ids.append(input_id)
+    else:
+      raise ValueError(f"Invalid input token: {token}")
   return input_ids
 
 
-def decode_output(output_ids):
+def decode_output(output_ids: list[int]) -> list[str]:
   output_tokens = []
   for output_id in output_ids:
     if output_id != 0:
       token = grammar_utils.get_symbol_token(output_id)
-      output_tokens.append(token)
+      if token is not None:
+        output_tokens.append(token)
+      else:
+        raise ValueError(f"Invalid output ID: {output_id}")
   return output_tokens

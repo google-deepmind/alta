@@ -17,7 +17,6 @@
 
 import copy
 import itertools
-from typing import Optional
 from framework import program
 from framework.interpreter import logger_utils
 from framework.mlp import mlp_logger
@@ -157,8 +156,8 @@ def run_layer(
     program_spec: program.Program,
     attention_output_variables: set[str],
     activations_seq: list[program.Activations],
-    logger: Optional[logger_utils.ActivationsLogger],
-    logger_mlp: Optional[mlp_logger.MLPLogger],
+    logger: logger_utils.ActivationsLogger | None,
+    logger_mlp: mlp_logger.MLPLogger | None,
 ):
   """Simulates a single Transformer layer."""
   # Run attention heads.
@@ -204,8 +203,8 @@ def _should_break(
 def run_transformer(
     program_spec: program.Program,
     activations_seq: list[program.Activations],
-    logger: Optional[logger_utils.ActivationsLogger] = None,
-    logger_mlp: Optional[mlp_logger.MLPLogger] = None,
+    logger: logger_utils.ActivationsLogger | None = None,
+    logger_mlp: mlp_logger.MLPLogger | None = None,
     max_layers: int | None = 100,
 ):
   """Simulate a Transformer."""

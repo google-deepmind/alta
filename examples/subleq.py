@@ -28,7 +28,9 @@ Instruction subleq a, b, c
     goto a + 3
 """
 
+from framework import program
 from framework import program_builder as pb
+from framework.mlp import simple_mlp
 
 
 # Number of memory registers.
@@ -49,11 +51,11 @@ def decode(value: int) -> int:
   return value + MIN_VALUE
 
 
-def encode_inputs(inputs: list[int]):
+def encode_inputs(inputs: list[int]) -> list[int]:
   return [encode(x) for x in inputs]
 
 
-def decode_outputs(outputs: list[int]):
+def decode_outputs(outputs: list[int]) -> list[int]:
   return [decode(x) for x in outputs]
 
 
@@ -70,7 +72,7 @@ def _update_position(z, position_a):
   z["position_c"] = position_a + 2
 
 
-def ffn_fn(z):
+def _ffn_fn(z: simple_mlp.VarsWrapper):
   """Feed-forward function for SUBLEQ."""
   if z["state"] == STATE_1:
     if decode(z["a"]) < 0 or decode(z["b"]) < 0:
@@ -106,7 +108,7 @@ def ffn_fn(z):
       z["state"] = STATE_1
 
 
-def get_variables(mem_range, use_clipping=True):
+def _get_variables(mem_range, use_clipping=True):
   """Returns a dictionary of variables for SUBLEQ."""
   variables = {
       # Value of register.
@@ -132,7 +134,7 @@ def get_variables(mem_range, use_clipping=True):
   return variables
 
 
-def get_attention_heads(use_clipping=False):
+def _get_attention_heads(use_clipping=False):
   """Returns a dictionary of attention heads for SUBLEQ."""
   attention_heads = {
       # Values of registers at `position_a`, `position_b`, and `position_c`,
@@ -156,17 +158,17 @@ def get_attention_heads(use_clipping=False):
   return attention_heads
 
 
-def build_program_spec():
+def build_program_spec() -> program.Program:
   """Returns a program spec for SUBLEQ."""
 
   mem_range = (MAX_VALUE - MIN_VALUE) + 1
-  variables = get_variables(mem_range)
-  attention_heads = get_attention_heads()
+  variables = _get_variables(mem_range)
+  attention_heads = _get_attention_heads()
 
   return pb.program_spec(
       variables=variables,
       heads=attention_heads,
-      ffn_fn=ffn_fn,
+      ffn_fn=_ffn_fn,
       output_name="mem",
       input_range=mem_range,
       position_range=NUM_POSITIONS,
@@ -175,13 +177,13 @@ def build_program_spec():
   )
 
 
-def add_position_update_rules(x, position_a):
+def _add_position_update_rules(x, position_a):
   x.set("position_a", position_a)
   x.set("position_b", position_a + 1)
   x.set("position_c", position_a + 2)
 
 
-def add_rules(x):
+def _add_rules(x: pb.MLPBuilder):
   """Feed-forward function for SUBLEQ."""
   for a in x.get("a"):
     x.set("a_clipped", encode(max(0, decode(a))))
@@ -225,23 +227,23 @@ def add_rules(x):
               # Break if `c` is negative.
               x.set("state", STATE_DONE)
             else:
-              add_position_update_rules(x, c)
+              _add_position_update_rules(x, c)
               x.set("state", STATE_1)
         else:
           # Proceed to next instruction.
           for position_a in x.get("position_a"):
-            add_position_update_rules(x, position_a + 3)
+            _add_position_update_rules(x, position_a + 3)
           x.set("state", STATE_1)
 
 
-def build_program_spec_sparse():
+def build_program_spec_sparse() -> program.Program:
   """Returns a program spec for SUBLEQ."""
 
   mem_range = (MAX_VALUE - MIN_VALUE) + 1
-  variables = get_variables(mem_range, use_clipping=True)
-  attention_heads = get_attention_heads(use_clipping=True)
+  variables = _get_variables(mem_range, use_clipping=True)
+  attention_heads = _get_attention_heads(use_clipping=True)
   x = pb.MLPBuilder(variables, attention_heads)
-  add_rules(x)
+  _add_rules(x)
   return pb.program_spec_from_rules(
       variables=variables,
       heads=attention_heads,

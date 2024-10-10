@@ -15,12 +15,21 @@
 
 """Library for initializing network parameters."""
 
+from collections.abc import Callable
 import jax
 import jax.numpy as jnp
 import numpy as np
 
 
-def random_layer_params(m, n, key, scale=1e-2):
+# Defines type for model parameters.
+LayerParameters = tuple[jnp.ndarray, jnp.ndarray]
+Parameters = list[LayerParameters]
+InitializationFn = Callable[[int, int, jax.Array], LayerParameters]
+
+
+def random_layer_params(
+    m: int, n: int, key: jax.Array, scale: float = 1e-2
+) -> LayerParameters:
   """Initializes a layer randomly scaled by `scale`."""
   w_key, b_key = jax.random.split(key)
   return scale * jax.random.normal(w_key, (n, m)), scale * jax.random.normal(
@@ -28,21 +37,25 @@ def random_layer_params(m, n, key, scale=1e-2):
   )
 
 
-def xavier_normal_layer_params(m, n, key):
+def xavier_normal_layer_params(m, n, key) -> LayerParameters:
   """Initializes a layer using Xavier initialization."""
   w_key, _ = jax.random.split(key)
   stddev = np.sqrt(2 / (m + n))
   return stddev * jax.random.normal(w_key, (n, m)), jnp.zeros(n)
 
 
-def he_layer_params(m, n, key):
+def he_layer_params(m, n, key) -> LayerParameters:
   """Initializes a layer using He initialization."""
   w_key, _ = jax.random.split(key)
   stddev = jnp.sqrt(2 / m)
   return jax.random.normal(w_key, (n, m)) * stddev, jnp.zeros(n)
 
 
-def init_network_params(sizes, key, layer_initialization_fn):
+def init_network_params(
+    sizes: list[int],
+    key: jax.Array,
+    layer_initialization_fn: InitializationFn,
+) -> Parameters:
   """Initializes network parameters."""
   keys = jax.random.split(key, len(sizes))
   return [
@@ -51,7 +64,7 @@ def init_network_params(sizes, key, layer_initialization_fn):
   ]
 
 
-def get_initialization_fn(initialization_fn_name):
+def get_initialization_fn(initialization_fn_name: str) -> InitializationFn:
   """Returns initialization function with the given name."""
   if initialization_fn_name == "he_layer_params":
     return he_layer_params

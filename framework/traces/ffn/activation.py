@@ -15,21 +15,24 @@
 
 """Library of activation functions."""
 
+from collections.abc import Callable
 import jax
 import jax.numpy as jnp
 
 
-def relu(x):
+def relu(x: jnp.ndarray) -> jnp.ndarray:
   """Relu activation functino."""
   return jnp.maximum(0, x)
 
 
-def sigmoid(x):
+def sigmoid(x: jnp.ndarray) -> jnp.ndarray:
   """Sigmoid activation function."""
   return jax.scipy.special.expit(x)
 
 
-def get_activation_fn(activation_fn_name):
+def get_activation_fn(
+    activation_fn_name: str,
+) -> Callable[[jnp.ndarray], jnp.ndarray]:
   """Returns activation function with the given name."""
   if activation_fn_name == "sigmoid":
     return sigmoid

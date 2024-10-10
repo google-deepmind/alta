@@ -58,7 +58,7 @@ class ConvertToTraces(beam.DoFn):
       yield trace_utils.create_example(trace)
 
 
-def pipeline(root):
+def pipeline(root: beam.Pipeline) -> None:
   """Configure beam pipeline."""
 
   _ = (

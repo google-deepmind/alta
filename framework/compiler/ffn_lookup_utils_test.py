@@ -38,10 +38,6 @@ class FfnExpansionUtilsTest(absltest.TestCase):
         output_name="foo",
         input_range=2,
     )
-    rules = program_spec.mlp.get_rules()
-    print("len(rules): %s" % len(rules))
-    for rule in rules:
-      print(rule)
     dim_mappings = dim_utils.get_var_mapping(program_spec)
     expanded_dim_mappings = dim_utils.get_expanded_var_mapping(program_spec)
 
@@ -50,7 +46,6 @@ class FfnExpansionUtilsTest(absltest.TestCase):
         dim_mappings=dim_mappings,
         expanded_dim_mappings=expanded_dim_mappings,
     )
-    print(lookup_params)
 
     # Initial variable values are:
     # `foo` is 0, so it is represented as [1.0, 0.0].
@@ -59,12 +54,8 @@ class FfnExpansionUtilsTest(absltest.TestCase):
     output = np.matmul(input_arr, lookup_params.weights_1)
     output += lookup_params.bias_1
     output = np.minimum(1, np.maximum(0, output))
-    print("hidden")
-    print(output)
     output = np.matmul(output, lookup_params.weights_2)
     output += lookup_params.bias_2
-    print("output")
-    print(output)
     # Residual connection.
     output += input_arr
 
@@ -91,10 +82,6 @@ class FfnExpansionUtilsTest(absltest.TestCase):
         input_range=2,
     )
 
-    rules = program_spec.mlp.get_rules()
-    print("len(rules): %s" % len(rules))
-    for rule in rules:
-      print(rule)
     dim_mappings = dim_utils.get_var_mapping(program_spec)
     expanded_dim_mappings = dim_utils.get_expanded_var_mapping(program_spec)
 
@@ -103,7 +90,6 @@ class FfnExpansionUtilsTest(absltest.TestCase):
         dim_mappings=dim_mappings,
         expanded_dim_mappings=expanded_dim_mappings,
     )
-    print(lookup_params)
 
     # Initial variable values are:
     # `foo` is 0, so it is represented as [1.0, 0.0].
@@ -113,12 +99,8 @@ class FfnExpansionUtilsTest(absltest.TestCase):
     output = np.matmul(input_arr, lookup_params.weights_1)
     output += lookup_params.bias_1
     output = np.minimum(1, np.maximum(0, output))
-    print("hidden")
-    print(output)
     output = np.matmul(output, lookup_params.weights_2)
     output += lookup_params.bias_2
-    print("output")
-    print(output)
     # Residual connection. This adds the input prior to being expanded.
     output += [1.0, 0.0, 0.1, 0.1]
 

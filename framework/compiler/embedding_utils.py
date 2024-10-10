@@ -15,8 +15,6 @@
 
 """Get parameters for embeddings."""
 
-from typing import Any
-
 import numpy as np
 
 from framework import program
@@ -25,8 +23,8 @@ from framework.transformer import parameters
 
 
 def variables_to_vector(
-    attention_outputs: set[str],
-    variables: dict[str, Any],
+    attention_outputs: frozenset[str],
+    variables: program.Activations,
     var_mappings: dim_utils.VarDimMappings,
 ) -> np.ndarray:
   """Return a vector encoding the given variables.
@@ -83,7 +81,7 @@ def variables_to_vector(
 
 def _get_default_non_position_variables(
     program_spec: program.Program, input_id: int
-) -> dict[str, Any]:
+) -> program.Activations:
   """Returns default value of non-position variables."""
   var_map = {}
   for var_name, var_spec in program_spec.variables.items():
@@ -98,7 +96,7 @@ def _get_default_non_position_variables(
 
 def _get_default_position_variables(
     program_spec: program.Program, position: int
-) -> dict[str, Any]:
+) -> program.Activations:
   """Returns default value of position variables."""
   var_map = {}
   for var_name, var_spec in program_spec.variables.items():
@@ -107,12 +105,12 @@ def _get_default_position_variables(
   return var_map
 
 
-def get_attention_outputs(program_spec: program.Program) -> set[str]:
+def get_attention_outputs(program_spec: program.Program) -> frozenset[str]:
   """Returns attention outputs for the given program spec."""
   attention_outputs = set()
   for head_spec in program_spec.head_specs:
     attention_outputs.add(head_spec.output)
-  return attention_outputs
+  return frozenset(attention_outputs)
 
 
 def get_embedding_parameters(

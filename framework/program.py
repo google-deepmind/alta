@@ -15,8 +15,8 @@
 
 """Defines a program specification."""
 
+from collections.abc import Callable
 import dataclasses
-from typing import Callable, Dict, Optional, Union
 
 from framework.mlp import mlp_logger
 from framework.mlp import mlp_rules
@@ -67,7 +67,7 @@ class SetVarSpec:
   position_init_fn: Callable[[int], frozenset[int]] | None = None
 
 
-VarSpec = Union[CategoricalVarSpec, NumericalVarSpec, SetVarSpec]
+VarSpec = CategoricalVarSpec | NumericalVarSpec | SetVarSpec
 
 NumericalVarValue = float
 CategoricalVarValue = int
@@ -75,7 +75,7 @@ SetVarValue = frozenset[int]
 
 # None corresponds to zero vector in compiled programs.
 # TODO(petershaw): Differentiate between `undefined` and `null`.
-VarValue = Union[CategoricalVarValue, NumericalVarValue, SetVarValue, None]
+VarValue = CategoricalVarValue | NumericalVarValue | SetVarValue | None
 
 
 @dataclasses.dataclass(frozen=True)
@@ -129,9 +129,7 @@ class NumericalAttentionHeadSpec:
   relative_position_mask: frozenset[int] = frozenset()
 
 
-AttentionHeadSpec = Union[
-    CategoricalAttentionHeadSpec, NumericalAttentionHeadSpec
-]
+AttentionHeadSpec = CategoricalAttentionHeadSpec | NumericalAttentionHeadSpec
 
 
 # Activations represent the state of a single element before and after
@@ -139,10 +137,10 @@ AttentionHeadSpec = Union[
 # This maps conceptually to an embedding, where different dimensions of the
 # embedding conceptually relate to different variables.
 # A sequence of Activations relates to the Transformer state between layers.
-Activations = Dict[str, VarValue]
+Activations = dict[str, VarValue]
 
 # Map of variables to their specifications.
-VariablesMap = Dict[str, VarSpec]
+VariablesMap = dict[str, VarSpec]
 
 # List of attention head specifications.
 HeadSpecs = list[AttentionHeadSpec]
@@ -167,7 +165,7 @@ class BaseMLP:
   def run_layer(
       self,
       activations: Activations,
-      logger: Optional[mlp_logger.MLPLogger] = None,
+      logger: mlp_logger.MLPLogger | None = None,
   ) -> None:
     raise NotImplementedError()
 

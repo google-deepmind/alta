@@ -50,7 +50,10 @@ def create_examples(traces):
   return [trace_utils.create_example(trace) for trace in traces]
 
 
-def main(unused_argv):
+def main(argv):
+  if len(argv) > 1:
+    raise app.UsageError("Too many command-line arguments.")
+
   model_inputs = io_utils.read_jsonl(_INPUT.value)
   if _SAMPLE.value > 0:
     model_inputs = model_inputs[: _SAMPLE.value]

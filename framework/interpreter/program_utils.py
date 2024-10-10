@@ -19,9 +19,12 @@ from framework import program
 
 
 def _get_default_var_map(
-    var_specs, attention_output_variables, position, input_id
+    var_specs: program.VariablesMap,
+    attention_output_variables: frozenset[str],
+    position: int,
+    input_id: int,
 ):
-  """Get map of variables to their default values."""
+  """Get map of variables to their initial values."""
   var_map = {}
   for var_name, var_spec in var_specs.items():
     if var_name in attention_output_variables:
@@ -45,7 +48,7 @@ def initialize_activations(
     position_shift: int = 0,
 ) -> list[program.Activations]:
   """Initializes activations to default values."""
-  attention_output_variables = set(
+  attention_output_variables = frozenset(
       head_spec.output for head_spec in program_spec.head_specs
   )
   activations_seq = []

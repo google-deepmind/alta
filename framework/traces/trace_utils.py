@@ -17,7 +17,7 @@
 
 import dataclasses
 import random
-from typing import Any, List, Optional
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -43,12 +43,12 @@ class FFNTrace:
   layer_idx: int = 0
   element_idx: int = 0
   # Optional metadata for trace.
-  model_input: Optional[List[int]] = None
+  model_input: list[int] | None = None
   # Input and output vectors.
-  vector_in: Optional[npt.ArrayLike] = None
-  vector_out: Optional[npt.ArrayLike] = None
+  vector_in: npt.ArrayLike | None = None
+  vector_out: npt.ArrayLike | None = None
 
-  def serialize_to_dict(self):
+  def serialize_to_dict(self) -> dict[str, Any]:
     """Return JSON serializable dict."""
     json_dict = {
         "variables_in": self.variables_in,
@@ -64,7 +64,7 @@ class FFNTrace:
     return json_dict
 
 
-def trace_from_dict(json_dict):
+def trace_from_dict(json_dict: dict[str, Any]) -> FFNTrace:
   """Return Trace object from json dict."""
   kwargs = json_dict.copy()
   if "vector_in" in kwargs:
@@ -74,12 +74,12 @@ def trace_from_dict(json_dict):
   return FFNTrace(**kwargs)
 
 
-def write_traces_jsonl(output_path: str, traces: List[FFNTrace]):
+def write_traces_jsonl(output_path: str, traces: list[FFNTrace]):
   rows = [trace.serialize_to_dict() for trace in traces]
   io_utils.write_jsonl(output_path, rows)
 
 
-def read_traces_jsonl(input_path: str) -> List[FFNTrace]:
+def read_traces_jsonl(input_path: str) -> list[FFNTrace]:
   rows = io_utils.read_jsonl(input_path)
   return [trace_from_dict(row) for row in rows]
 
@@ -170,7 +170,7 @@ def variables_to_vector(
   return vector
 
 
-def add_vectors(program_spec: program.Program, traces: List[FFNTrace]):
+def add_vectors(program_spec: program.Program, traces: list[FFNTrace]):
   """Add vector representations of input and output variables to traces."""
   var_mapping = dim_utils.get_var_mapping(program_spec)
   for trace in traces:
@@ -188,10 +188,10 @@ def add_vectors(program_spec: program.Program, traces: List[FFNTrace]):
 
 
 def extract_traces(
-    model_inputs: List[List[int]],
+    model_inputs: list[list[int]],
     program_spec: program.Program,
     max_layers: int,
-) -> List[FFNTrace]:
+) -> list[FFNTrace]:
   """Extract traces by running interpreter for every model input."""
   traces = []
   for input_ids in model_inputs:

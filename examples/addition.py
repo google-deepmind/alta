@@ -24,7 +24,10 @@ the carry value. When the last digit has been processed, the final carry value
 is added to the output buffer.
 """
 
+from framework import program
 from framework import program_builder as pb
+from framework.mlp import simple_mlp
+
 
 # Define processing steps.
 STEP_INIT = 0
@@ -43,7 +46,7 @@ END_TOKEN = 12
 INPUT_RANGE = 13
 
 
-def format_input(input_a: int, input_b: int):
+def format_input(input_a: int, input_b: int) -> str:
   """Used to generate model input string."""
   # Pad to equal length.
   input_length = max(len(str(input_a)), len(str(input_b)))
@@ -52,7 +55,7 @@ def format_input(input_a: int, input_b: int):
   return "s" + input_a + "+" + input_b + "e"
 
 
-def get_vocab():
+def _get_vocab():
   """Returns a vocabulary mapping from tokens to token IDs."""
   vocab = {}
   for i in range(10):
@@ -63,22 +66,22 @@ def get_vocab():
   return vocab
 
 
-def preprocess_input(input_a: int, input_b: int):
+def preprocess_input(input_a: int, input_b: int) -> list[int]:
   """Converts input to a list of token IDs."""
   input_string = format_input(input_a, input_b)
-  vocab = get_vocab()
+  vocab = _get_vocab()
   input_ids = [vocab[c] for c in input_string]
   return input_ids
 
 
-def process_output(output_ids):
+def process_output(output_ids: list[int]) -> int:
   """Converts output to a final result."""
   # Trim end token.
   output_ids = output_ids[:-1]
   return int("".join([str(x) for x in output_ids]))
 
 
-def init(x):
+def _init(x: simple_mlp.VarsWrapper):
   """Initializes pointers."""
   # If `x["token"] == END_TOKEN` then `x["token_right"]` will be undefined.
   if x["token"] != END_TOKEN:
@@ -89,7 +92,7 @@ def init(x):
       x["ptr_a"] = 1
 
 
-def iterate(x):
+def _iterate(x: simple_mlp.VarsWrapper):
   """Execute one step of addition."""
   # Compute sum.
   raw_sum = x["value_carry"] + x["ptr_a_token"] + x["ptr_b_token"]
@@ -105,27 +108,27 @@ def iterate(x):
     x["ptr_b"] = x["ptr_b_right"]
 
 
-def finalize(x):
+def _finalize(x: simple_mlp.VarsWrapper):
   """Finalize output by adding the final carry to the output."""
   if x["ptr_out"]:
     x["value_out"] = x["value_carry"]
   x["step"] = STEP_DONE
 
 
-def ffn_fn(x):
+def _ffn_fn(x: simple_mlp.VarsWrapper):
   if x["step"] == STEP_INIT:
-    init(x)
+    _init(x)
     x["step"] = STEP_ITERATE
   elif x["step"] == STEP_ITERATE:
     if x["ptr_a_token"] == START_TOKEN:
       x["step"] = STEP_FINALIZE
     else:
-      iterate(x)
+      _iterate(x)
   elif x["step"] == STEP_FINALIZE:
-    finalize(x)
+    _finalize(x)
 
 
-def get_variables():
+def _get_variables():
   """Returns a dictionary of variables."""
   variables = {
       "token": pb.input_var(INPUT_RANGE),
@@ -149,7 +152,7 @@ def get_variables():
   return variables
 
 
-def get_attention_heads():
+def _get_attention_heads():
   """Returns a dictionary of attention heads."""
   attention_heads = {
       # For these relative attention heads, we always want to attend to the
@@ -166,14 +169,14 @@ def get_attention_heads():
   return attention_heads
 
 
-def build_program_spec():
+def build_program_spec() -> program.Program:
   """Returns a program spec for addition task."""
-  variables = get_variables()
-  attention_heads = get_attention_heads()
+  variables = _get_variables()
+  attention_heads = _get_attention_heads()
   return pb.program_spec(
       variables=variables,
       heads=attention_heads,
-      ffn_fn=ffn_fn,
+      ffn_fn=_ffn_fn,
       output_name="value_out",
       input_range=INPUT_RANGE,
       position_range=None,
@@ -182,7 +185,7 @@ def build_program_spec():
   )
 
 
-def add_init_rules(x):
+def _add_init_rules(x):
   """Initializes pointers."""
   for token, token_right in x.get("token", "token_right"):
     if token != END_TOKEN:
@@ -193,7 +196,7 @@ def add_init_rules(x):
         x.set("ptr_a", 1)
 
 
-def add_iterate_rules(x, ptr_a_token):
+def _add_iterate_rules(x, ptr_a_token):
   """Execute one step of addition."""
   # Compute sum.
   for value_carry, ptr_b_token in x.get("value_carry", "ptr_b_token"):
@@ -215,18 +218,18 @@ def add_iterate_rules(x, ptr_a_token):
         x.set("ptr_b", ptr_b_right)
 
 
-def add_rules(x: pb.MLPBuilder):
+def _add_rules(x: pb.MLPBuilder):
   """Add transition rules."""
   for step in x.get("step"):
     if step == STEP_INIT:
-      add_init_rules(x)
+      _add_init_rules(x)
       x.set("step", STEP_ITERATE)
     elif step == STEP_ITERATE:
       for ptr_a_token in x.get("ptr_a_token"):
         if ptr_a_token == START_TOKEN:
           x.set("step", STEP_FINALIZE)
         else:
-          add_iterate_rules(x, ptr_a_token)
+          _add_iterate_rules(x, ptr_a_token)
     elif step == STEP_FINALIZE:
       for ptr_out in x.get("ptr_out"):
         if ptr_out:
@@ -235,12 +238,12 @@ def add_rules(x: pb.MLPBuilder):
       x.set("step", STEP_DONE)
 
 
-def build_sparse_program_spec():
+def build_sparse_program_spec() -> program.Program:
   """Returns a sparse program spec."""
-  variables = get_variables()
-  attention_heads = get_attention_heads()
+  variables = _get_variables()
+  attention_heads = _get_attention_heads()
   x = pb.MLPBuilder(variables, attention_heads)
-  add_rules(x)
+  _add_rules(x)
   return pb.program_spec_from_rules(
       variables=variables,
       heads=attention_heads,

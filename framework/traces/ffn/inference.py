@@ -15,11 +15,16 @@
 
 """Library for running inference."""
 
+from collections.abc import Callable
 import jax
 import jax.numpy as jnp
 
 
-def predict(params, activations, activation_function):
+def predict(
+    params: list[tuple[jnp.ndarray, jnp.ndarray]],
+    activations: jnp.ndarray,
+    activation_function: Callable[[jnp.ndarray], jnp.ndarray],
+):
   """Makes prediction for given `activations` using `params`."""
   for w, b in params[:-1]:
     outputs = jnp.dot(w, activations) + b

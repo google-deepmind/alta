@@ -19,6 +19,7 @@ import collections
 
 from absl import app
 from absl import flags
+from absl import logging
 import numpy as np
 
 from framework import program_registry
@@ -56,7 +57,10 @@ _ACTIVATION_FN = flags.DEFINE_enum(
 )
 
 
-def main(unused_argv):
+def main(argv):
+  if len(argv) > 1:
+    raise app.UsageError("Too many command-line arguments.")
+
   np.set_printoptions(precision=2, threshold=10_000, suppress=True)
 
   trace_inputs, trace_outputs = data.get_all_data(
@@ -79,8 +83,8 @@ def main(unused_argv):
       predictions, trace_outputs
   ).item()
 
-  print("Vector accuracy {}".format(vector_accuracy))
-  print("Vector element accuracy {}".format(vector_element_accuracy))
+  logging.info("Vector accuracy %s", vector_accuracy)
+  logging.info("Vector element accuracy %s", vector_element_accuracy)
 
   error_counts = collections.defaultdict(int)
   for x, y, y_pred in zip(trace_inputs, trace_outputs, predictions):
@@ -88,24 +92,28 @@ def main(unused_argv):
     y_vars = debug_utils.vector_to_variables(y, var_mappings)
     y_pred_vars = debug_utils.vector_to_variables(y_pred, var_mappings)
     if y_vars != y_pred_vars:
-      print("x_vars: %s" % x_vars)
-      print("y_vars: %s" % y_vars)
+      logging.info("x_vars: %s", x_vars)
+      logging.info("y_vars: %s", y_vars)
 
       for idx, (e, e_pred) in enumerate(zip(y.tolist(), y_pred.tolist())):
         if abs(e - e_pred) > 0.1:
-          print("diff at %d: %.2f vs. %.2f (pred)" % (idx, e, e_pred))
+          logging.info("diff at %d: %.2f vs. %.2f (pred)", idx, e, e_pred)
 
       for key, value in y_pred_vars.items():
         y_ref = y_vars[key]
         if y_ref != value:
-          print(
-              "diff for `%s`: %s vs. %s (pred) - %s"
-              % (key, y_ref, value, var_mappings.var_mappings[key])
+          logging.info(
+              "diff for `%s`: %s vs. %s (pred) - %s",
+              key,
+              y_ref,
+              value,
+              var_mappings.var_mappings[key],
           )
           error_counts[(key, value, y_ref)] += 1
 
   for (variable, value, ref), count in error_counts.items():
-    print("%s, %s, %s, %d" % (variable, value, ref, count))
+    logging.info("%s, %s, %s, %d", variable, value, ref, count)
+
 
 if __name__ == "__main__":
   app.run(main)

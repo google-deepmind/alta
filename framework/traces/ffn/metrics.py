@@ -18,24 +18,32 @@
 import jax.numpy as jnp
 
 
-def vectors_almost_equal(vector_1, vector_2, tolerance=1e-1):
+def vectors_almost_equal(
+    vector_1: jnp.ndarray, vector_2: jnp.ndarray, tolerance: float = 1e-1
+):
   """Returns whether all elements of vectors are almost equal."""
   abs_diff = jnp.abs(vector_1 - vector_2)
   max_diff = jnp.max(abs_diff, axis=1)
   return max_diff <= tolerance
 
 
-def vector_elements_almost_equal(vector_1, vector_2, tolerance=1e-1):
+def vector_elements_almost_equal(
+    vector_1: jnp.ndarray, vector_2: jnp.ndarray, tolerance: float = 1e-1
+):
   """Returns boolean vec indicating whether input vec elements are almost equal."""
   abs_diff = jnp.abs(vector_1 - vector_2)
   return abs_diff <= tolerance
 
 
-def get_vector_element_accuracy(predictions, targets, tolerance=1e-1):
+def get_vector_element_accuracy(
+    predictions: jnp.ndarray, targets: jnp.ndarray, tolerance: float = 1e-1
+):
   """Returns fraction of predicted vector elements that are correct."""
   return jnp.mean(vector_elements_almost_equal(predictions, targets, tolerance))
 
 
-def get_vector_accuracy(predictions, targets, tolerance=1e-1):
+def get_vector_accuracy(
+    predictions: jnp.ndarray, targets: jnp.ndarray, tolerance: float = 1e-1
+):
   """Returns fraction of predicted vectors that are correct."""
   return jnp.mean(vectors_almost_equal(predictions, targets, tolerance))

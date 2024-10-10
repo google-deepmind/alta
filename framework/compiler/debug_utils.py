@@ -15,7 +15,7 @@
 
 """Helpful utilities for debugging."""
 
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 
@@ -28,7 +28,7 @@ THRESHOLD = 0.9
 def _get_categorical_var_value(
     vector: np.ndarray,
     var_mapping: dim_utils.CategoricalVarDimMapping,
-) -> Optional[int]:
+) -> int | None:
   value = 0
   for idx in range(var_mapping.start_idx, var_mapping.end_idx):
     if vector[idx] > THRESHOLD:

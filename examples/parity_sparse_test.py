@@ -326,10 +326,6 @@ class ParityTest(parameterized.TestCase):
     """Tests sum mod 2 for previously problematic input."""
     input_ids = [0, 0, 1, 1, 0, 1, 1, 0, 1]
     program_spec = parity_sparse.build_sum_mod_2_program_spec()
-    rules = program_spec.mlp.get_rules()
-    print("len(rules): %s" % len(rules))
-    for rule in rules:
-      print(rule)
     activations_seq = program_utils.initialize_activations(
         program_spec, get_inputs(ParityAlgorithm.SUM_MOD_2, input_ids)
     )

@@ -15,6 +15,7 @@
 
 """Tests interpreter and compiler for addition task."""
 
+from absl import logging
 from absl.testing import absltest
 from examples import addition
 from framework.compiler import compiler_config
@@ -41,7 +42,7 @@ class AdditionTest(absltest.TestCase):
         activations_seq,
         max_layers=None,
     )
-    print("output_ids: %s" % output_ids)
+    logging.info("output_ids: %s", output_ids)
     output = addition.process_output(output_ids)
 
     self.assertEqual(output, expected)
@@ -61,7 +62,7 @@ class AdditionTest(absltest.TestCase):
         activations_seq,
         max_layers=None,
     )
-    print("output_ids: %s" % output_ids)
+    logging.info("output_ids: %s", output_ids)
     output = addition.process_output(output_ids)
 
     self.assertEqual(output, expected)
@@ -82,7 +83,7 @@ class AdditionTest(absltest.TestCase):
         max_layers=10,
         verbose=False,
     )
-    print("output_ids: %s" % output_ids)
+    logging.info("output_ids: %s", output_ids)
     output = addition.process_output(output_ids)
 
     self.assertEqual(output, expected)

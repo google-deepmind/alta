@@ -42,7 +42,7 @@ class RHS:
 
 
 # Represents a conjunction of atoms.
-LHS = tuple[LHSAtom]
+LHS = tuple[LHSAtom, ...]
 
 
 @dataclasses.dataclass(frozen=True)

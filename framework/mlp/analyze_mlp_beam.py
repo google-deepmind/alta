@@ -28,22 +28,25 @@ from framework.mlp import mlp_logger
 from framework.mlp import rule_io
 
 
-FLAGS = flags.FLAGS
-
-
-flags.DEFINE_string(
+_INPUT = flags.DEFINE_string(
     "input",
     "",
     "Jsonl file where each line is tuple of input ids.",
 )
 
-flags.DEFINE_string(
+_PROGRAM = flags.DEFINE_string(
     "program",
     "",
     "Name of program to run.",
 )
 
-flags.DEFINE_string("output", "", "Where to write output jsonl file of rules.")
+_OUTPUT = flags.DEFINE_string(
+    "output", "", "Where to write output jsonl file of rules."
+)
+
+_MAX_LAYERS = flags.DEFINE_integer(
+    "max_layers", 512, "Maximum number of layers."
+)
 
 
 class GetRules(beam.DoFn):
@@ -51,7 +54,7 @@ class GetRules(beam.DoFn):
 
   def setup(self):
     self.logger = mlp_logger.MLPLogger()
-    self.program_spec = program_registry.get_program(FLAGS.program)
+    self.program_spec = program_registry.get_program(_PROGRAM.value)
 
   def process(self, model_inputs_row: str):
     input_ids = json.loads(model_inputs_row)
@@ -64,7 +67,7 @@ class GetRules(beam.DoFn):
     _ = interpreter_utils.run_transformer(
         self.program_spec,
         activations_seq,
-        max_layers=512,
+        max_layers=_MAX_LAYERS.value,
         logger=None,
         logger_mlp=self.logger,
     )
@@ -75,17 +78,17 @@ class GetRules(beam.DoFn):
     self.logger.reset()
 
 
-def pipeline(root):
+def pipeline(root: beam.Pipeline) -> None:
   """Configure beam pipeline."""
 
   _ = (
       root
-      | "Read" >> beam.io.ReadFromText(FLAGS.input)
+      | "Read" >> beam.io.ReadFromText(_INPUT.value)
       | "Reshuffle1" >> beam.Reshuffle()
       | "Convert" >> beam.ParDo(GetRules())
       | "Deduplicate" >> beam.Distinct()
       | "Reshuffle2" >> beam.Reshuffle()
-      | "Write" >> beam.io.WriteToText(FLAGS.output)
+      | "Write" >> beam.io.WriteToText(_OUTPUT.value)
   )
 
 

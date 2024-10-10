@@ -15,8 +15,8 @@
 
 """Utilties for reading and writing various file formats."""
 
+from collections.abc import Iterable, Iterator
 import json
-from typing import Iterable, Iterator
 
 import tensorflow as tf
 
@@ -107,4 +107,6 @@ def write_tfrecords(
   """
   with tf.io.TFRecordWriter(output_path) as tfrecord_writer:
     for example in tf_examples:
-      tfrecord_writer.write(example.SerializeToString())  # pytype: disable=wrong-arg-types
+      tfrecord_writer.write(
+          example.SerializeToString()
+      )  # pytype: disable=wrong-arg-types

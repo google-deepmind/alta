@@ -42,7 +42,6 @@ class ProjectionUtilsTest(absltest.TestCase):
     # Without broadcasting.
     activations = np.array([[1.0, 0.0, 0.0, 1.0]])
 
-    print(select_transform)
     select_vector = np.matmul(activations, select_transform)
     expected_select_vector = np.array([[1.0, 0.0]])
     np.testing.assert_equal(select_vector, expected_select_vector)
@@ -54,7 +53,6 @@ class ProjectionUtilsTest(absltest.TestCase):
     # With implicit broadcasting.
     activations = np.array([1.0, 0.0, 0.0, 1.0])
 
-    print(select_transform)
     select_vector = np.matmul(activations, select_transform)
     expected_select_vector = np.array([1.0, 0.0])
     np.testing.assert_equal(select_vector, expected_select_vector)

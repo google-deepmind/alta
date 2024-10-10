@@ -181,14 +181,14 @@ def get_symbol_vocab():
   return Vocab(symbols)
 
 
-def get_symbol_id(symbol_token):
+def get_symbol_id(symbol_token: str) -> int | None:
   if symbol_token is None:
     return None
   symbol_vocab = get_symbol_vocab()
   return symbol_vocab.token_to_idx.get(symbol_token)
 
 
-def get_symbol_token(symbol_id):
+def get_symbol_token(symbol_id: int) -> str | None:
   if symbol_id is None:
     return None
   symbol_vocab = get_symbol_vocab()

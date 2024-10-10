@@ -15,7 +15,7 @@
 
 """MLP specificied by a set of rules."""
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from framework import program
 from framework import var_utils
@@ -35,7 +35,7 @@ def _get_activations_values(
     var_specs: program.VariablesMap,
     activations: program.Activations,
     variables: tuple[str, ...],
-) -> tuple[Optional[int], ...]:
+) -> tuple[int | None, ...]:
   """Returns values of variables in activations."""
   # Convert set and numeric variables to integers based on their possible
   # values.
@@ -50,7 +50,7 @@ def _get_activations_values(
 def get_ffn_fn(
     var_specs: program.VariablesMap,
     rules: mlp_rules.RuleSet,
-) -> Callable[[program.Activations, Optional[mlp_logger.MLPLogger]], None]:
+) -> Callable[[program.Activations, mlp_logger.MLPLogger | None], None]:
   """Returns a MLP function that implements the given rules."""
 
   # Map of variable names to map of variable values to rules.
@@ -66,7 +66,7 @@ def get_ffn_fn(
 
   def ffn_fn(
       activations: program.Activations,
-      logger: Optional[mlp_logger.MLPLogger] = None,
+      logger: mlp_logger.MLPLogger | None = None,
   ) -> None:
     # Determine which rules match the given input.
     updates = {}
@@ -111,7 +111,7 @@ class SparseMLP(program.BaseMLP):
   def run_layer(
       self,
       activations: program.Activations,
-      logger: Optional[mlp_logger.MLPLogger] = None,
+      logger: mlp_logger.MLPLogger | None = None,
   ) -> None:
     self.ffn_fn(activations, logger)
 

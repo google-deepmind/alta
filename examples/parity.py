@@ -25,7 +25,9 @@ track of the running parity. Outputs a sequence of all 0's if there are an even
 number of 1's and a sequence of all 1's if there are an odd number.
 """
 
+from framework import program
 from framework import program_builder as pb
+
 
 # Some programs use EOS or START token.
 EOS_VALUE = 2
@@ -36,7 +38,7 @@ def build_sequential_program_absolute(
     dynamic_halting: bool = False,
     max_input_length: int = 50,
     generate_rules: bool = True,
-):
+) -> program.Program:
   """Sequential algorithm using absolute positions."""
   done_value = 1
   variables = {
@@ -77,7 +79,7 @@ def build_sequential_program_absolute(
 
 def build_sequential_program_relative(
     dynamic_halting: bool = False, generate_rules: bool = True
-):
+) -> program.Program:
   """Sequential algorithm using relative positions."""
   done_value = 1
   variables = {
@@ -114,7 +116,7 @@ def build_sequential_program_relative(
 
 def build_sum_mod_2_program_spec(
     max_input_length: int = 50, generate_rules: bool = True
-):
+) -> program.Program:
   """Returns a program spec for parity task using sum mod 2 algorithm."""
   input_range = 3
 
@@ -153,7 +155,7 @@ def build_sum_mod_2_program_spec(
 def build_intermediate_variable_sum_mod_2_program_spec(
     max_input_length: int = 50,
     generate_rules: bool = False,
-):
+) -> program.Program:
   """Uses sum mod 2 algorithm but stores `num_ones` as an intermediate variable.
 
   Modified version of build_sum_mod_2_program_spec used for intermediate

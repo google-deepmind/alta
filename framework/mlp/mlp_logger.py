@@ -30,4 +30,4 @@ class MLPLogger:
     self.seen.add(rule)
 
   def reset(self):
-    self.seen = set()
+    self.seen.clear()

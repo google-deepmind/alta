@@ -15,8 +15,6 @@
 
 """Get parameters for attention heads and output transforms."""
 
-from typing import List
-
 import numpy as np
 
 from framework import program
@@ -119,7 +117,7 @@ def get_attention_params(
     program_spec: program.Program,
     var_mappings: dim_utils.VarDimMappings,
     config: compiler_config.Config,
-) -> List[parameters.AttentionHeadParameters]:
+) -> list[parameters.AttentionHeadParameters]:
   return [
       _get_attention_head_params(head_spec, var_mappings, config)
       for head_spec in program_spec.head_specs
@@ -128,5 +126,5 @@ def get_attention_params(
 
 def get_output_transform(
     program_spec: program.Program, var_mappings: dim_utils.VarDimMappings
-) -> List[parameters.AttentionHeadParameters]:
+) -> list[parameters.AttentionHeadParameters]:
   return select_variable(var_mappings, program_spec.outputs)

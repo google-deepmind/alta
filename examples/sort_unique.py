@@ -26,7 +26,9 @@ The RASP program for this is:
 This implementation relies on the presence of a special BOS token.
 """
 
+from framework import program
 from framework import program_builder as pb
+from framework.mlp import simple_mlp
 
 BOS_VALUE = 0
 INPUT_RANGE = 16
@@ -47,7 +49,7 @@ def _possible_target_pos_query_values():
   return frozenset(possible_values)
 
 
-def build_program_spec():
+def build_program_spec() -> program.Program:
   """Returns a program spec for sort unique task."""
 
   variables = {
@@ -72,15 +74,15 @@ def build_program_spec():
       "output": pb.qkv("indices", "target_pos", "inputs"),
   }
 
-  def ffn_fn(activations):
-    if activations["state"] == 0:
+  def ffn_fn(x: simple_mlp.VarsWrapper):
+    if x["state"] == 0:
       # We computed x = 1/(1 + w) where w was the true selector width (excluding
       # BOS value). Here we compute w.
-      activations["target_pos"] = round(1 / activations["x"]) - 1
-      activations["state"] = 1
-    elif activations["state"] == 1:
+      x["target_pos"] = round(1 / x["x"]) - 1
+      x["state"] = 1
+    elif x["state"] == 1:
       # Attention outputs are set to undefined, so must copy to program output.
-      activations["program_ouput"] = activations["output"]
+      x["program_ouput"] = x["output"]
 
   return pb.program_spec(
       variables=variables,

@@ -17,12 +17,12 @@
 
 from collections.abc import Sequence
 import functools
-import json
 import os
 import time
 
 from absl import app
 from absl import flags
+from absl import logging
 import jax
 import numpy as np
 import optax
@@ -187,30 +187,13 @@ def get_layer_sizes(
   )
 
 
-def write_metrics(
-    output_dir,
-    steps,
-    train_vector_element_accuracies,
-    test_vector_element_accuracies,
-):
-  """Writes metrics as json to output directory."""
-  metrics_dict = {
-      "steps": steps,
-      "train_vector_element_accuracies": train_vector_element_accuracies,
-      "test_vector_element_accuracies": test_vector_element_accuracies,
-  }
-  with tf.io.gfile.GFile(
-      os.path.join(output_dir, "metrics.json"),
-      "w",
-  ) as f:
-    f.write(json.dumps(metrics_dict))
-
-
-def get_summary_writer():
+def get_summary_writer() -> tf.summary.SummaryWriter:
   return tf.summary.create_file_writer(os.path.join(_OUTPUT_DIR.value, "train"))
 
 
-def write_metric(writer, name, metric, step):
+def write_metric(
+    writer: tf.summary.SummaryWriter, name: str, metric: float, step: int
+):
   with writer.as_default():
     tf.summary.scalar(name, metric, step=step)
 
@@ -343,8 +326,10 @@ def train_model(training_config: train.TrainingConfig):
       # Write checkpoint every `checkpoint_period` steps.
       if (training_config.checkpoint_period is not None and
           step % training_config.checkpoint_period == 0):
-        serialize.save_params(os.path.join(training_config.output_dir,
-                                           f"params-{step}.pkl"), params)
+        serialize.save_params(
+            os.path.join(training_config.output_dir, f"params-{step}.jsonl"),
+            params,
+        )
 
       # Run evaluation every `eval_period` steps.
       if step % training_config.eval_period == 0:
@@ -355,25 +340,23 @@ def train_model(training_config: train.TrainingConfig):
             params, training_config.activation_fn, test_inputs, test_outputs
         )
 
-        print(
-            "Step {} Train vector accuracy {}".format(
-                step, train_vector_accuracy.item()
-            )
+        logging.info(
+            "Step %s Train vector accuracy %s",
+            step,
+            train_vector_accuracy.item(),
         )
-        print(
-            "Step {} Train vector element accuracy {}".format(
-                step, train_vector_element_accuracy.item()
-            )
+        logging.info(
+            "Step %s Train vector element accuracy %s",
+            step,
+            train_vector_element_accuracy.item(),
         )
-        print(
-            "Step {} Test vector accuracy {}".format(
-                step, test_vector_accuracy.item()
-            )
+        logging.info(
+            "Step %s Test vector accuracy %s", step, test_vector_accuracy.item()
         )
-        print(
-            "Step {} Test vector element accuracy {}".format(
-                step, test_vector_element_accuracy.item()
-            )
+        logging.info(
+            "Step %s Test vector element accuracy %s",
+            step,
+            test_vector_element_accuracy.item(),
         )
 
         write_metric(
@@ -411,7 +394,7 @@ def train_model(training_config: train.TrainingConfig):
 
       step += 1
     epoch_time = time.time() - start_time
-    print("Epoch {} in {:0.2f} sec".format(epoch, epoch_time))
+    logging.info("Epoch %s in %0.2f sec", epoch, epoch_time)
     epoch += 1
     write_metric(writer, "epoch", epoch, step)
 
@@ -423,7 +406,7 @@ def main(argv: Sequence[str]) -> None:
     raise app.UsageError("Too many command-line arguments.")
 
   if tf.io.gfile.exists(_OUTPUT_DIR.value):
-    print("Warning: --output_dir {} already exists.".format(_OUTPUT_DIR.value))
+    logging.info("Warning: --output_dir %s already exists.", _OUTPUT_DIR.value)
   else:
     tf.io.gfile.makedirs(_OUTPUT_DIR.value)
 
@@ -455,7 +438,7 @@ def main(argv: Sequence[str]) -> None:
   params = train_model(training_config)
 
   # Write final checkpoint.
-  serialize.save_params(os.path.join(_OUTPUT_DIR.value, "params.pkl"), params)
+  serialize.save_params(os.path.join(_OUTPUT_DIR.value, "params.jsonl"), params)
 
 
 if __name__ == "__main__":

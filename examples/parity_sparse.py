@@ -15,7 +15,9 @@
 
 """Implements sparse version of programs for parity task."""
 
+from framework import program
 from framework import program_builder as pb
+
 
 # Some programs use EOS or START token.
 EOS_VALUE = 2
@@ -25,7 +27,7 @@ START = 2
 def build_sequential_program_absolute(
     dynamic_halting: bool = False,
     max_input_length: int = 50,
-):
+) -> program.Program:
   """Sequential algorithm using absolute positions."""
   done_value = 1
   variables = {
@@ -68,7 +70,7 @@ def build_sequential_program_absolute(
 
 def build_sequential_program_relative(
     dynamic_halting: bool = False,
-):
+) -> program.Program:
   """Sequential algorithm using relative positions."""
   done_value = 1
   variables = {
@@ -105,7 +107,9 @@ def build_sequential_program_relative(
   )
 
 
-def build_sum_mod_2_program_spec(max_input_length: int = 100):
+def build_sum_mod_2_program_spec(
+    max_input_length: int = 100,
+) -> program.Program:
   """Returns a program spec for parity task using sum mod 2 algorithm."""
   input_range = 3
 

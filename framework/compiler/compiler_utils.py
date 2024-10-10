@@ -26,8 +26,11 @@ from framework.transformer import parameters
 
 
 def _get_feed_forward_params(
-    program_spec, config, dim_mappings, expanded_dim_mappings
-):
+    program_spec: program.Program,
+    config: compiler_config.Config,
+    dim_mappings: dim_utils.VarDimMappings,
+    expanded_dim_mappings: dim_utils.VarDimMappings,
+) -> list[parameters.FeedForwardLayerParams]:
   """Get parameters for feed forward layers."""
   expansion_params = ffn_expansion_utils.build_expansion_params(
       program_spec,
@@ -41,7 +44,7 @@ def _get_feed_forward_params(
       expanded_dim_mappings,
   )
 
-  ffn_params = [
+  return [
       parameters.FeedForwardLayerParams(
           weights=expansion_params.weights_1, biases=expansion_params.bias_1
       ),
@@ -55,8 +58,6 @@ def _get_feed_forward_params(
           weights=lookup_params.weights_2, biases=lookup_params.bias_2
       ),
   ]
-
-  return ffn_params
 
 
 def compile_transformer(

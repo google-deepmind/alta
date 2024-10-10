@@ -15,9 +15,10 @@
 
 """Defines API used to specify programs."""
 
+from collections.abc import Callable, Iterator
 import dataclasses
 import itertools
-from typing import Any, Iterator, Optional
+from typing import Any
 
 from framework import program
 from framework import var_utils
@@ -43,15 +44,15 @@ class AttentionHead:
   # Optional mask for relative position attention.
   relative_position_mask: frozenset[int] = frozenset()
   # If None, will infer the output spec from the value spec.
-  output_spec: Optional[program.VarSpec] = None
+  output_spec: program.VarSpec | None = None
 
 
 def qkv(
     query: str,
     key: str,
     value: str,
-    relative_position_mask=frozenset(),
-    output_spec=None,
+    relative_position_mask: frozenset[int] = frozenset(),
+    output_spec: program.VarSpec | None = None,
 ) -> AttentionHead:
   """Returns an AttentionHead instance."""
   return AttentionHead(
@@ -63,7 +64,7 @@ def qkv(
   )
 
 
-def v_relative(value, position):
+def v_relative(value: str, position: int):
   """Convience function for defining relative position attention heads."""
   # Will always attend to the element at the given relative position.
   return qkv(
@@ -221,7 +222,9 @@ def var(var_range: int, **kwargs):
   return program.CategoricalVarSpec(range=var_range, **kwargs)
 
 
-def input_var(var_range: int, init_fn=None, **kwargs):
+def input_var(
+    var_range: int, init_fn: Callable[[int], int] | None = None, **kwargs
+):
   """Returns a CategoricalVarSpec initialized from input token."""
   if init_fn is None:
     init_fn = lambda x: x

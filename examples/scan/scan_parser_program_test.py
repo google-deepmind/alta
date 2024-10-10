@@ -25,17 +25,13 @@ from framework.interpreter import logger_utils
 from framework.interpreter import program_utils
 
 
-def get_input_ids(input_string):
-  input_tokens = input_string.split(" ") + ["eos"]
-  return [scan_utils.get_input_id(token) for token in input_tokens]
-
-
 class ScanParserProgramTest(absltest.TestCase):
 
   def test_scan(self):
     program_spec = scan_parser_program.build_program_spec()
 
-    input_ids = get_input_ids("jump twice after walk")
+    input_tokens = ["jump", "twice", "after", "walk", "eos"]
+    input_ids = [scan_utils.get_input_id(token) for token in input_tokens]
     activations_seq = program_utils.initialize_activations(
         program_spec, input_ids
     )

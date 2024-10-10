@@ -75,7 +75,10 @@ def get_model_inputs(examples):
   return model_inputs
 
 
-def main(unused_argv):
+def main(argv):
+  if len(argv) > 1:
+    raise app.UsageError("Too many command-line arguments.")
+
   examples = data_utils.load_examples(_INPUT.value)
   if _SAMPLE.value > 0:
     examples = examples[: _SAMPLE.value]

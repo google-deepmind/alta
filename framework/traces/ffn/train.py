@@ -15,9 +15,9 @@
 
 """Library for training FFN."""
 
+from collections.abc import Callable
 import dataclasses
 import functools
-from typing import Callable
 
 import jax
 import jax.numpy as jnp
@@ -61,7 +61,12 @@ class TrainingConfig:
   output_dir: str
 
 
-def l2_loss(params, activation_fn, inputs, targets):
+def l2_loss(
+    params: list[tuple[jnp.ndarray, jnp.ndarray]],
+    activation_fn: Callable[[jnp.ndarray], jnp.ndarray],
+    inputs: jnp.ndarray,
+    targets: jnp.ndarray,
+):
   """Returns L2 loss."""
   predictions = inference.batched_predict(params, inputs, activation_fn)
   squared_error = jnp.mean(jnp.square(predictions - targets))
@@ -74,7 +79,19 @@ def l2_loss(params, activation_fn, inputs, targets):
     # Pass immutable objects as static arguments.
     static_argnames=("activation_fn", "optimizer"),
 )
-def update(params, activation_fn, optimizer, opt_state, x, y):
+def update(
+    params: list[tuple[jnp.ndarray, jnp.ndarray]],
+    activation_fn: Callable[[jnp.ndarray], jnp.ndarray],
+    optimizer: optax.GradientTransformation,
+    opt_state: optax.OptState,
+    x: jnp.ndarray,
+    y: jnp.ndarray,
+) -> tuple[
+    float,
+    list[jnp.ndarray],
+    list[tuple[jnp.ndarray, jnp.ndarray]],
+    optax.OptState,
+]:
   """Performs single update step and returns updated params.
 
   Args:

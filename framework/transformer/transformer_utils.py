@@ -15,8 +15,6 @@
 
 """Implements minimalist numpy Transformer forward pass."""
 
-from typing import List, Union
-
 import jax.numpy as jnp
 import numpy as np
 import scipy
@@ -151,7 +149,7 @@ def run_layer(
   if verbose:
     print("attn_output + residual: %s" % attn_output)
 
-  if learned_ffn_params:
+  if learned_ffn_params is not None:
     # TODO(b/347699354): Make activation fn configurable.
     ffn_output = inference.batched_predict(
         learned_ffn_params,
@@ -172,12 +170,12 @@ def run_layer(
 
 def run_transformer(
     params: parameters.Parameters,
-    learned_ffn_params: jnp.ndarray | None,
-    input_ids: List[int],
+    learned_ffn_params: list[tuple[jnp.ndarray, jnp.ndarray]] | None,
+    input_ids: list[int],
     max_layers: int = 100,
     activation_fn_name: str = "sigmoid",
     verbose: bool = False,
-) -> List[Union[int, float]]:
+) -> list[int | float]:
   """Runs a Transformer forward pass.
 
   Args:

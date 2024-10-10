@@ -21,7 +21,9 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 
 
-def decode_fn(record_bytes, vector_length, include_debug=False):
+def decode_fn(
+    record_bytes: bytes, vector_length: int, include_debug: bool = False
+):
   """Decodes a single example."""
   schema = {
       "input": tf.io.FixedLenFeature([vector_length], dtype=tf.float32),
@@ -47,7 +49,12 @@ def decode_fn(record_bytes, vector_length, include_debug=False):
   return output_example
 
 
-def get_batches(path, vector_length, batch_size, shuffle_buffer_size=10_000):
+def get_batches(
+    path: str,
+    vector_length: int,
+    batch_size: int,
+    shuffle_buffer_size: int = 10_000,
+):
   """Returns batched data."""
   ds = tf.data.TFRecordDataset(tf.io.gfile.glob(path))
   ds = ds.map(functools.partial(decode_fn, vector_length=vector_length))
@@ -59,7 +66,12 @@ def get_batches(path, vector_length, batch_size, shuffle_buffer_size=10_000):
   return tfds.as_numpy(ds)
 
 
-def get_all_data(path, vector_length, sample_size=None, include_debug=False):
+def get_all_data(
+    path: str,
+    vector_length: int,
+    sample_size: int | None = None,
+    include_debug: bool = False,
+):
   """Returns all data in at `path`."""
   ds = tf.data.TFRecordDataset(tf.io.gfile.glob(path))
   ds = ds.map(

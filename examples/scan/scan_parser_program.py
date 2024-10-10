@@ -21,7 +21,9 @@ a simpler illustration of how the overall algorithm works.
 
 from examples.scan import grammar_utils
 from examples.scan import scan_utils
+from framework import program
 from framework import program_builder as pb
+from framework.mlp import simple_mlp
 
 
 EOS_ID = scan_utils.get_input_id("eos")
@@ -31,16 +33,19 @@ NUM_SYMBOLS = scan_utils.NUM_SYMBOLS
 NUM_INPUT_TOKENS = scan_utils.NUM_INPUT_TOKENS
 
 
-def get_stack_symbol(symbol_id):
+def _get_stack_symbol(symbol_id: int) -> str | None:
   if symbol_id == 0:
     return None
   else:
     return grammar_utils.get_symbol_token(symbol_id - 1)
 
 
-def maybe_match_rule(
-    input_pointer_token_id, stack_symbol_1, stack_symbol_2, stack_symbol_3
-):
+def _maybe_match_rule(
+    input_pointer_token_id: int,
+    stack_symbol_1: int,
+    stack_symbol_2: int,
+    stack_symbol_3: int,
+) -> grammar_utils.QCFGRule | None:
   """Check if top of stack matches any rule."""
   # Get string represenations of parsing state.
   input_token_str = scan_utils.get_input_token(input_pointer_token_id)
@@ -50,7 +55,7 @@ def maybe_match_rule(
       stack_symbol_3,
   )
   stack_symbols = [
-      get_stack_symbol(symbol_id) for symbol_id in stack_symbol_ids
+      _get_stack_symbol(symbol_id) for symbol_id in stack_symbol_ids
   ]
   for rule in grammar_utils.RULES:
     source_len = len(rule.source)
@@ -66,21 +71,22 @@ def maybe_match_rule(
   return None
 
 
-def rule_id(rule):
+def _rule_id(rule: grammar_utils.QCFGRule) -> int:
   for idx, rule_b in enumerate(grammar_utils.RULES):
     if rule_b == rule:
       return idx + 1
+  raise ValueError("Rule not found: %s" % rule)
 
 
-def rule_len(rule):
+def _rule_len(rule: grammar_utils.QCFGRule) -> int:
   return len(rule.source)
 
 
-def rule_lhs_id(rule):
+def _rule_lhs_id(rule: grammar_utils.QCFGRule) -> int:
   return grammar_utils.get_symbol_id(rule.lhs) + 1
 
 
-def get_symbol_id(input_id):
+def _get_symbol_id(input_id: int) -> int:
   input_string = scan_utils.get_input_token(input_id)
   symbol_id = grammar_utils.get_symbol_id(input_string)
   if symbol_id is None:
@@ -89,7 +95,7 @@ def get_symbol_id(input_id):
     return symbol_id + 1
 
 
-def shift_stack_pointers(z, stack_pointer_offset: int):
+def _shift_stack_pointers(z: simple_mlp.VarsWrapper, stack_pointer_offset: int):
   new_stack_pointer_0 = z["stack_pointer_0"] + stack_pointer_offset
   z["stack_pointer_0"] = max(0, new_stack_pointer_0)
   z["stack_pointer_1"] = max(0, new_stack_pointer_0 - 1)
@@ -97,33 +103,33 @@ def shift_stack_pointers(z, stack_pointer_offset: int):
   z["stack_pointer_3"] = max(0, new_stack_pointer_0 - 3)
 
 
-def reduce(z, matched_rule):
+def reduce(z: simple_mlp.VarsWrapper, matched_rule: grammar_utils.QCFGRule):
   """Implements reduce action."""
   # Pop RHS elements and add LHS nonterminal to stack.
-  if z["position"] == (z["stack_pointer_0"] - rule_len(matched_rule)):
-    z["symbol_id"] = rule_lhs_id(matched_rule)
-  shift_stack_pointers(z, 1 - rule_len(matched_rule))
+  if z["position"] == (z["stack_pointer_0"] - _rule_len(matched_rule)):
+    z["symbol_id"] = _rule_lhs_id(matched_rule)
+  _shift_stack_pointers(z, 1 - _rule_len(matched_rule))
   # Add rule to parse tree.
   if z["position"] == z["tree_pointer"]:
     # Use 1-indexing to reserve 0 for no rule.
-    z["rule_id"] = rule_id(matched_rule)
+    z["rule_id"] = _rule_id(matched_rule)
   z["tree_pointer"] += 1
 
 
-def shift(z):
+def shift(z: simple_mlp.VarsWrapper):
   """Implements shift action."""
   # Shift the next token to the stack.
   if z["position"] == z["stack_pointer_0"]:
-    z["symbol_id"] = get_symbol_id(z["input_pointer_token_id"])
-  shift_stack_pointers(z, 1)
+    z["symbol_id"] = _get_symbol_id(z["input_pointer_token_id"])
+  _shift_stack_pointers(z, 1)
   z["input_pointer"] += 1
 
 
-def ffn_fn(z):
+def ffn_fn(z: simple_mlp.VarsWrapper):
   """Feed-forward function for the program."""
   if not z["done"]:
     # Check if top-3 stack symbols (and 1 lookahead token) match any rule.
-    matched_rule = maybe_match_rule(
+    matched_rule = _maybe_match_rule(
         z["input_pointer_token_id"],
         z["stack_symbol_1"],
         z["stack_symbol_2"],
@@ -139,7 +145,7 @@ def ffn_fn(z):
         shift(z)
 
 
-def build_program_spec():
+def build_program_spec() -> program.Program:
   """Returns a program spec for SCAN task."""
   variables = {
       "token": pb.input_var(NUM_INPUT_TOKENS),

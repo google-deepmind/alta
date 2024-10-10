@@ -15,22 +15,30 @@
 
 """Utilities for logging activations in interpeter."""
 
+from collections.abc import Collection
+
+from framework import program
+
+ActivationsSeq = list[program.Activations]
+
 
 class ActivationsLogger:
   """Logs activations in interpeter."""
+  initial_activations: ActivationsSeq | None = None
+  # Tuples of (mlp_input, mlp_output).
+  layer_activations: list[tuple[ActivationsSeq, ActivationsSeq]] = []
 
-  def __init__(self):
-    self.initial_activations = None
-    # Tuples of (mlp_input, mlp_output).
-    self.layer_activations = []
-
-  def set_initial_activations(self, activations):
+  def set_initial_activations(self, activations: ActivationsSeq):
     self.initial_activations = activations
 
-  def add_layer_activations(self, mlp_in, mlp_out):
+  def add_layer_activations(
+      self, mlp_in: ActivationsSeq, mlp_out: ActivationsSeq
+  ):
     self.layer_activations.append((mlp_in, mlp_out))
 
-  def get_variable_values(self, element_idx, variable_name):
+  def _get_variable_values(
+      self, element_idx: int, variable_name: str
+  ) -> list[program.VarValue]:
     values = []
     assert self.initial_activations is not None
     values.append(self.initial_activations[element_idx][variable_name])
@@ -40,7 +48,9 @@ class ActivationsLogger:
     return values
 
   def get_activations_table(
-      self, elements_to_include=None, variables_to_include=None
+      self,
+      elements_to_include: Collection[int] | None = None,
+      variables_to_include: Collection[str] | None = None,
   ):
     """Returns list of lists."""
     assert self.initial_activations is not None
@@ -69,22 +79,24 @@ class ActivationsLogger:
         if variables is not None and variable_name not in variables:
           continue
         row = [element_idx, variable_name]
-        row.extend(self.get_variable_values(element_idx, variable_name))
+        row.extend(self._get_variable_values(element_idx, variable_name))
         table.append(row)
 
     return table
 
-  def _format_value(self, value):
-    if callable(value):
-      return "Q"
-    elif value is None:
+  def _format_value(self, value: program.VarValue):
+    if value is None:
       return "-"
     else:
       return str(value)
 
   def print_activations_table(
-      self, sep=",", elements_to_include=None, variables_to_include=None
+      self,
+      sep: str = ",",
+      elements_to_include: Collection[int] | None = None,
+      variables_to_include: Collection[str] | None = None,
   ):
+    """Prints activations table."""
     table = self.get_activations_table(
         elements_to_include=elements_to_include,
         variables_to_include=variables_to_include,

@@ -16,7 +16,6 @@
 """Define variable mappings."""
 
 import dataclasses
-from typing import Dict, Tuple
 
 from framework import program
 from framework import var_utils
@@ -92,7 +91,7 @@ class VarDimMappings:
   in the FFN implementation.
   """
 
-  var_mappings: Dict[str, VarDimMapping]
+  var_mappings: dict[str, VarDimMapping]
   # Start and end dimension indices for overall mapping of all variables.
   start_idx: int
   end_idx: int
@@ -100,7 +99,7 @@ class VarDimMappings:
 
 def _get_mapping_from_spec(
     var_spec: program.VarSpec, current_idx: int
-) -> Tuple[VarDimMapping, int]:
+) -> tuple[VarDimMapping, int]:
   """Get a variable mapping for a given spec."""
   if isinstance(var_spec, program.CategoricalVarSpec):
     start_idx = current_idx
@@ -124,7 +123,7 @@ def _get_mapping_from_spec(
 
 def _get_expanded_mapping_from_spec(
     var_spec: program.VarSpec, current_idx: int
-) -> Tuple[VarDimMapping, int]:
+) -> tuple[VarDimMapping, int]:
   """Get extended mapping for a given spec."""
   if isinstance(var_spec, program.CategoricalVarSpec):
     return _get_mapping_from_spec(var_spec, current_idx)
